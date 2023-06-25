@@ -33,11 +33,8 @@ const LOGPREFIX = 'GAMEPAD  '; // keep at 9 digits for consistency
 //------------------------------------------------------------------------------
 const controllerMapping = {
 
-  // This is the mapping for a Logitech F710 when it's in X mode. This is
-  // supposedly the same as an Xbox controller, so it might be a good starting
-  // point when we have a real one to test.
-  'Logitech Gamepad F710': {
-  
+  'Microsoft X-Box 360 pad': {
+
     'buttons': {
       '0':  'KEYCODE_BUTTON_A',
       '1':  'KEYCODE_BUTTON_B',
@@ -49,9 +46,9 @@ const controllerMapping = {
       '7':  'KEYCODE_BUTTON_START',
       '8':  'KEYCODE_HOME',
       '9':  'KEYCODE_BUTTON_THUMBL',
-      '10': 'KEYCODE_BUTTON_THUMBR'  
+      '10': 'KEYCODE_BUTTON_THUMBR'
     },
-    
+
     'axes': {
       '0': 'AXIS_X',
       '1': 'AXIS_Y',
@@ -60,14 +57,44 @@ const controllerMapping = {
       '4': 'AXIS_Z',
       '5': 'AXIS_RTRIGGER',
       '6': 'AXIS_HAT_X',
-      '7': 'AXIS_HAT_Y'  
+      '7': 'AXIS_HAT_Y'
+    }
+  },
+  // This is the mapping for a Logitech F710 when it's in X mode. This is
+  // supposedly the same as an Xbox controller, so it might be a good starting
+  // point when we have a real one to test.
+  'Logitech Gamepad F710': {
+
+    'buttons': {
+      '0':  'KEYCODE_BUTTON_A',
+      '1':  'KEYCODE_BUTTON_B',
+      '2':  'KEYCODE_BUTTON_X',
+      '3':  'KEYCODE_BUTTON_Y',
+      '4':  'KEYCODE_BUTTON_L1',
+      '5':  'KEYCODE_BUTTON_R1',
+      '6':  'KEYCODE_BACK',
+      '7':  'KEYCODE_BUTTON_START',
+      '8':  'KEYCODE_HOME',
+      '9':  'KEYCODE_BUTTON_THUMBL',
+      '10': 'KEYCODE_BUTTON_THUMBR'
+    },
+
+    'axes': {
+      '0': 'AXIS_X',
+      '1': 'AXIS_Y',
+      '2': 'AXIS_LTRIGGER',
+      '3': 'AXIS_RZ',
+      '4': 'AXIS_Z',
+      '5': 'AXIS_RTRIGGER',
+      '6': 'AXIS_HAT_X',
+      '7': 'AXIS_HAT_Y'
     }
   },
 
   // This is the mapping for a Logitech F710 when it's in D mode, which means
   // direct input. Note that some of its buttons don't activate in this mode.
   'Logitech Logitech Cordless RumblePad 2': {
-  
+
     'buttons': {
       '0':  'KEYCODE_BUTTON_X',
       '1':  'KEYCODE_BUTTON_A',
@@ -82,7 +109,7 @@ const controllerMapping = {
       '10': 'KEYCODE_BUTTON_THUMBL',
       '11': 'KEYCODE_BUTTON_THUMBR'
   },
-    
+
     'axes': {
       '0': 'AXIS_X',
       '1': 'AXIS_Y',
@@ -98,7 +125,7 @@ const controllerMapping = {
   // this is an Apple-special model, and the mappings might be different on
   // macOS; all of this work was done on Debian.
   'Nimbus': {
-  
+
     'buttons': {
       '0':  'KEYCODE_BUTTON_A',
       '1':  'KEYCODE_BUTTON_B',
@@ -106,10 +133,10 @@ const controllerMapping = {
       '3':  'KEYCODE_BUTTON_Y',
       '4':  'KEYCODE_BUTTON_L1',
       '5':  'KEYCODE_BUTTON_R1',
-      '6':  'KEYCODE_BUTTON_LTRIGGER', 
+      '6':  'KEYCODE_BUTTON_LTRIGGER',
       '7':  'KEYCODE_BUTTON_RTRIGGER'
       },
-    
+
     'axes': {
       '0': 'AXIS_Y',
       '1': 'AXIS_X',
@@ -129,7 +156,7 @@ const controllerMapping = {
   // going to use the triggers as a deadman switch, so it's okay if they
   // both send events.
   'Wireless Controller': {
-  
+
     'buttons': {
       '0':  'KEYCODE_BUTTON_X',
       '1':  'KEYCODE_BUTTON_A',
@@ -146,7 +173,7 @@ const controllerMapping = {
       '12': 'KEYCODE_HOME',
       '13': 'KEYCODE_BUTTON_TOUCHPAD'
       },
-    
+
     'axes': {
       '0': 'AXIS_Y',
       '1': 'AXIS_X',
@@ -199,10 +226,10 @@ export class GamepadController {
         // Listen for gamepad events
         this.gamepad.on('move', this.gamepadEventMove.bind(this));
         this.gamepad.on('up', this.gamepadEventUp.bind(this));
-        this.gamepad.on('down', this.gamepadEventDown.bind(this));        
-        this.gamepad.on('attach', this.gamepadEventAttach.bind(this));        
-        this.gamepad.on('remove', this.gamepadEventRemove.bind(this));        
-        
+        this.gamepad.on('down', this.gamepadEventDown.bind(this));
+        this.gamepad.on('attach', this.gamepadEventAttach.bind(this));
+        this.gamepad.on('remove', this.gamepadEventRemove.bind(this));
+
         // Create a gamepad loop and poll for events
         setInterval(this.gamepad.processEvents, 16);
         // Scan for new gamepads as a slower rate
@@ -248,12 +275,12 @@ export class GamepadController {
 
     // PRIVATE METHODS
 
-    // The `gamepad.deviceAtIndex()` is awlays 0-based, but controller ID's
+    // The `gamepad.deviceAtIndex()` is always 0-based, but controller ID's
     // keep incrementing when we connect and disconnect them. Thus, need to
     // find deviceAtIndex(n) where deviceID = id. I don't have an array o
     // of devices, though, so I have to query each one until I find it.
     deviceIndexForID(id: number) {
-      for (let i = 0; i < this.gamepad.numDevices; i++) {
+      for (let i = 0; i < this.gamepad.numDevices(); i++) {
         if (this.gamepad.deviceAtIndex(i).deviceID == id)
           return i;
       }
@@ -299,10 +326,13 @@ export class GamepadController {
 
       return result;
     }
- 
+
     gamepadEventAttach(id: number, state: GamepadState) {
-      if (controllerMapping[state.description])
+      log.info(LOGPREFIX, `attach: ${id} ` + JSON.stringify(state));
+      if (controllerMapping[state.description]) {
         this.mappings[id] = controllerMapping[state.description];
+        log.info(LOGPREFIX, `attach: ${id} ` + JSON.stringify(this.mappings[id]));
+      }
       else
         this.mappings[id] = controllerMapping['Wireless Controller'];
 
@@ -337,7 +367,7 @@ export class GamepadController {
         this.events.emit('use', buttonPress, deviceState);
       }
     }
-    
+
     gamepadEventDown(id: number, num: number) {
       const deviceState = this.deviceStateForID(id);
       const buttonPress = this.mappings[id].buttons[num];

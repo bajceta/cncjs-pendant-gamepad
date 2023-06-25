@@ -33,7 +33,7 @@ export class GcodeSender {
     this.connector = actions.connector;
     this.zsafepos = ZSAFEPOS;
     }
-  
+
   //--------------------------------------------------
   // controller operations: cyclestart
   //--------------------------------------------------
@@ -97,7 +97,7 @@ export class GcodeSender {
     this.sendMessage('command', 'unlock')
   }
 
-  
+
   //--------------------------------------------------
   // coolant operations: flood on
   //--------------------------------------------------
@@ -188,7 +188,7 @@ export class GcodeSender {
     this.sendMessage('command', 'homing');
   }
 
-  
+
   //--------------------------------------------------
   // execute a probe operation
   //--------------------------------------------------
@@ -261,6 +261,7 @@ export class GcodeSender {
   // on screen when using `--fake-socket` option.
   //--------------------------------------------------------------------------
   sendMessage(eventName: string, directive: string, data?: any) {
+    log.info(LOGPREFIX, `Gcode ${data}`);
     if (!this.options.simulate && this.connector.serialConnected) {
       this.connector.socket.emit(eventName, this.options.port, directive, data);
     } else {
@@ -269,7 +270,7 @@ export class GcodeSender {
           log.info(LOGPREFIX, `Gcode ${data}`);
         else
           log.info(LOGPREFIX, `Command ${directive}`);
-      } 
+      }
       else
         log.warn(LOGPREFIX, `Unknown command ${eventName}: ${directive}, ${data}`);
     }

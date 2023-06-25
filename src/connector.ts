@@ -12,7 +12,7 @@ import { Options }            from './console';
 import { clearInterval }      from 'timers';
 import * as fs                from 'fs';
 import * as path              from 'path';
-import jwt                    from 'jsonwebtoken'; 
+import jwt                    from 'jsonwebtoken';
 import log                    from "npmlog";
 
 // Note: don't be tempted to update package.json to the newest version of
@@ -45,7 +45,7 @@ export class Connector {
   serial: NodeJS.Timer;
   logPrefix: string;
   awaitingString = 'Waiting for a game controller to be connected.';
-  
+
   constructor(gamepadController: GamepadController, options: Options) {
     this.gamepadController = gamepadController;
     this.options = options;
@@ -66,9 +66,9 @@ export class Connector {
     //   might expect ;-)
     gamepadController.on('attach', (id, state) => {
       const numDevices = gamepadController.numDevices();
-      if (numDevices == 1) 
+      if (numDevices == 1)
         this.connectServer();
-      else 
+      else
         log.warn(this.logPrefix, `There are ${numDevices} game controllers attached. Operate with caution!`);
     });
 
@@ -125,8 +125,9 @@ export class Connector {
     // kill our connection.
     //------------------------------------------------------------------------
     this.subscribeMessage('error', (err) => {
+      console.log(err);
       log.error(this.logPrefix, 'Error message received from cncjs - killing connection');
-      if (this.socket) 
+      if (this.socket)
         this.socket.destroy();
       log.info(this.logPrefix, `Attempting reconnect to ${server}`);
       this.socket = io.connect(server, { 'query': `token=${token}` });
@@ -201,12 +202,12 @@ export class Connector {
     // Current machine status.
     // Would have been nice to know where we are before making a jog request,
     // but unless homing, we have no idea where we are. The mpos resets to
-    // {0} whenever we connect to the serial port. Grbl doesn't remember. 
+    // {0} whenever we connect to the serial port. Grbl doesn't remember.
     //------------------------------------------------------------------------
     this.subscribeMessage('controller:state', (type: string, state: any) => {
       log.trace(this.logPrefix, `controller:state for ${type}`, state);
     });
-      
+
     //------------------------------------------------------------------------
     // Returns the state of the current workflow.
     //   WORKFLOW_STATE_IDLE = idle
@@ -248,7 +249,8 @@ export class Connector {
         log.info(this.logPrefix, msg);
         this.socket.emit('open', this.options.port, {
           baudrate: Number(this.options.baudrate),
-          controllerType: this.options.controllerType
+          //controllerType: this.options.controllerType
+          controllerType: 'Grbl',
       });
   }, 2000);
     }
@@ -282,4 +284,4 @@ export class Connector {
     }
   };
 
-} // class Connector 
+} // class Connector

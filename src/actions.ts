@@ -71,7 +71,7 @@ export class Actions {
 
   gamepadState = {} as GamepadState;          // state of current controller
   axisInstructions = new XYZCoords();         // next jog movement instructions
-  
+
   thumbRightActive = false;
   thumbLeftActive = false;
 
@@ -114,7 +114,7 @@ export class Actions {
   // Our heavy lifter. Every time a new event occurs, look at the totality of
   // the buttons in order to determine what to do. It's not a good idea to
   // respond to individual events that might get out of sync, especially
-  // when button combinations are needed. 
+  // when button combinations are needed.
   //--------------------------------------------------------------------------
   onUse(id: string, state: GamepadState) {
     const a = state.axisStates;        // dereference for easy access.
@@ -122,7 +122,7 @@ export class Actions {
     let ai = new XYZCoords;            // mm to move each axis.
 
     //------------------------------------------------------------
-    // Collect all of the modifier key states. 
+    // Collect all of the modifier key states.
     //------------------------------------------------------------
 
     const deadmanSlow = b.KEYCODE_BUTTON_L1 || b.KEYCODE_BUTTON_R1;
@@ -148,7 +148,7 @@ export class Actions {
     //------------------------------------------------------------
     // Determine appropriate jog and creep values for the Z axis.
     // This is determined by which hat button is used. This isn't
-    // enabling motion yet, just selecting a speed in case we 
+    // enabling motion yet, just selecting a speed in case we
     // select motion later, so it doesn't matter if the key we're
     // testing is doing something else this round.
     //------------------------------------------------------------
@@ -157,8 +157,8 @@ export class Actions {
     const creepDistZ = a.AXIS_HAT_X ? CZ_LOW : CZ_MED;
 
     //------------------------------------------------------------
-    // Enable/Disable axis movement via the thumb buttons. The 
-    // redundant check ensures that we only detect this button 
+    // Enable/Disable axis movement via the thumb buttons. The
+    // redundant check ensures that we only detect this button
     // press when the event actually occurs (not when wiggling
     // the stick), and only on down and not up.
     //------------------------------------------------------------
@@ -268,7 +268,7 @@ export class Actions {
     }
 
     //==================================================
-    // The timer function will pick these up and act 
+    // The timer function will pick these up and act
     // accordingly.
     //==================================================
 
@@ -320,7 +320,7 @@ export class Actions {
 
   } // onUse()
 
-  
+
   //--------------------------------------------------------------------------
   // Perform tasks. We were going to do this via introspection, but it's
   // probably dangerous to let a user run abritrary methods. Besides, who
@@ -334,12 +334,12 @@ export class Actions {
 
       const task = Array.isArray(taskArray) ? taskArray[0] : taskArray;
       const params = Array.isArray(taskArray) ? taskArray.slice(1) : null;
- 
+
 
       log.debug(LOGPREFIX, `trigger:${trigger} condition:${condition} task: ${task} params: ${params}`);
 
       switch(task.toUpperCase()) {
-        
+
         case 'CONTROLLERCYCLESTART': {
           this.gcodeSender.controllerCyclestart();
           break;
@@ -436,10 +436,10 @@ export class Actions {
           this.gcodeSender.spindleOn(params[0]);
           break;
         }
-        
+
         default:
           break;
-        
+
       }
 
       }
